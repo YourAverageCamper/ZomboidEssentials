@@ -1,0 +1,21 @@
+name: aZomboid-Essentials
+version: 1.0
+main: me.zeus.ZomboidEssentials.Core.ZomboidEssentials
+description: Zomboid Essentials
+commands:
+  money:
+    syntax: /money
+    description: Displays money
+    aliases: [bal, balance]
+  teleport:
+    syntax: /teleport <player>
+    description: Teleports you to specified player
+    aliases: [tp, tele, go]
+  tphere:
+    syntax: /tphere <player>
+    description: Teleports specified player to you
+    aliases: [teleporthere, telehere, summon]
+  setmoney:
+    syntax: /setmoney [user] <amount>
+    aliases: [setbalance, setbal]
+    description: Set balance of yourself or another user
