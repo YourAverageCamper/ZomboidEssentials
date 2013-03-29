@@ -2,8 +2,8 @@
 package me.zeus.ZomboidEssentials.Commands;
 
 
-import me.zeus.ZomboidEssentials.Core.EcoPlayer;
 import me.zeus.ZomboidEssentials.Core.ZomboidEssentials;
+import me.zeus.ZomboidEssentials.Resources.EcoPlayer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
