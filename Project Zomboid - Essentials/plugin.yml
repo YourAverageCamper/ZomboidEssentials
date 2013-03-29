@@ -19,3 +19,21 @@ commands:
     syntax: /setmoney [user] <amount>
     aliases: [setbalance, setbal]
     description: Set balance of yourself or another user
+  buy:
+    syntax: /buy <item> <amount>
+    aliases: [purchase, b]
+    description: Purchase an item
+  setspawn:
+    syntax: /setspawn
+    description: Sets the spawn location
+  spawn:
+    syntax: /spawn
+    description: Teleports user to spawn
+  killall:
+    syntax: /killall
+    description: Kills all mobs
+  give:
+    syntax: /give [user] <item> <amount>
+    aliases: [spawnitem, i, gimme]
+    description: Gives specified item
+    
