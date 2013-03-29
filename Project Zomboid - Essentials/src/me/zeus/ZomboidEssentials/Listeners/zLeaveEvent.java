@@ -2,8 +2,8 @@
 package me.zeus.ZomboidEssentials.Listeners;
 
 
-import me.zeus.ZomboidEssentials.Core.EcoPlayer;
 import me.zeus.ZomboidEssentials.Core.ZomboidEssentials;
+import me.zeus.ZomboidEssentials.Resources.EcoPlayer;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
