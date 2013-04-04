@@ -23,6 +23,7 @@ public class BuyCommand implements CommandExecutor {
     public BuyCommand(ZomboidEssentials plugin)
     {
         this.plugin = plugin;
+        plugin.getCommand("buy").setExecutor(this);
     }
 
     private EcoPlayer ecoplayer;

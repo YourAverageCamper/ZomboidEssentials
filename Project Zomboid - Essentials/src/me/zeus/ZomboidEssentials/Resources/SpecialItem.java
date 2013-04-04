@@ -15,7 +15,8 @@ public enum SpecialItem
 {
 
     AIR(WeaponType.AIR),
-    NOOB_SWORD(WeaponType.NOOB_SWORD);
+    NOOB_SWORD(WeaponType.NOOB_SWORD),
+    NOOB_BOW(WeaponType.NOOB_BOW);
 
     private WeaponType type;
     private ItemStack is;
@@ -34,12 +35,19 @@ public enum SpecialItem
             return null;
         case NOOB_SWORD:
             is = new ItemStack(Material.WOOD_SWORD, 1);
-            is.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             meta = is.getItemMeta();
-            meta.setLore(Arrays.asList("§5Hah, only noobs use this!"));
+            meta.setLore(Arrays.asList("§5You're a noob for using this!"));
             meta.setDisplayName("§eNoob Sword");
+            is.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             is.setItemMeta(meta);
             return is;
+        case NOOB_BOW:
+            is = new ItemStack(Material.BOW, 1);
+            meta = is.getItemMeta();
+            meta.setLore(Arrays.asList("§5Still can't afford REAL equipment?"));
+            meta.setDisplayName("§eNoob Bow");
+            is.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 1);
+            is.setItemMeta(meta);
         }
         return null;
     }

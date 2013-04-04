@@ -21,6 +21,7 @@ public class SetSpawnCommand implements CommandExecutor {
     public SetSpawnCommand(ZomboidEssentials plugin)
     {
         this.plugin = plugin;
+        plugin.getCommand("setspawn").setExecutor(this);
     }
 
     // ======================================================= \\

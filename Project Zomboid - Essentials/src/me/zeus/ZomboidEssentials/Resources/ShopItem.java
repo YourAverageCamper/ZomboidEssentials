@@ -6,13 +6,17 @@ public enum ShopItem
 {
 
     AIR("Air", 0),
+    // special
     HEAL("Heal", 50),
     REPAIR_HAND("Repair", 250),
+    // potions
     JUMP("Jump", 50),
     SPEED("Speed", 50),
     STRENGTH("Strength", 50),
     REGEN("Regen", 50),
-    NOOB_SWORD("Noob Sword", 15, WeaponType.NOOB_SWORD);
+    // weapons
+    NOOB_SWORD("Noob Sword", 15, WeaponType.NOOB_SWORD),
+    NOOB_BOW("Noob Bow", 30, WeaponType.NOOB_BOW);
 
     String name;
     int price;

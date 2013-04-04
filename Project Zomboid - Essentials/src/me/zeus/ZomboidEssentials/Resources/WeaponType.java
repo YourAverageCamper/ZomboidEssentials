@@ -6,7 +6,8 @@ public enum WeaponType
 {
 
     AIR(""),
-    NOOB_SWORD("§eNoob Sword");
+    NOOB_SWORD("§eNoob Sword"),
+    NOOB_BOW("§eNoob Bow");
 
     String realName;
 

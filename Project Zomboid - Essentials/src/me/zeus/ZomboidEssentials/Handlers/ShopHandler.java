@@ -78,6 +78,9 @@ public class ShopHandler {
         case NOOB_SWORD:
             player.getInventory().addItem(SpecialItem.NOOB_SWORD.getAsItem());
             break;
+        case NOOB_BOW:
+            player.getInventory().addItem(SpecialItem.NOOB_SWORD.getAsItem());
+            break;
         }
 
     }

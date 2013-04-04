@@ -36,4 +36,11 @@ commands:
     syntax: /give [user] <item> <amount>
     aliases: [spawnitem, i, gimme]
     description: Gives specified item
-    
+  time:
+    syntax: /time [night/day]
+    description: Set the time in the world
+    aliases: [settime, timeset]
+  setwarp:
+    syntax: /setwarp <name>
+    description: Sets a warp where you are standing
+    aliases: [sw, setw]

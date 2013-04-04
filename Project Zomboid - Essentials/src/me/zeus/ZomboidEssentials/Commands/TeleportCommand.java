@@ -21,6 +21,7 @@ public class TeleportCommand implements CommandExecutor {
     public TeleportCommand(ZomboidEssentials plugin)
     {
         this.plugin = plugin;
+        plugin.getCommand("teleport").setExecutor(this);
     }
 
     // ======================================================= \\

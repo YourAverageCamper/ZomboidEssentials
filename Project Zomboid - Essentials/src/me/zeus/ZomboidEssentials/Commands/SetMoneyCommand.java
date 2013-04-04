@@ -22,6 +22,7 @@ public class SetMoneyCommand implements CommandExecutor {
     public SetMoneyCommand(ZomboidEssentials plugin)
     {
         this.plugin = plugin;
+        plugin.getCommand("setmoney").setExecutor(this);
     }
 
     // ======================================================= \\

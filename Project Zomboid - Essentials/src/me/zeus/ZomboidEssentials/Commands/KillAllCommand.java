@@ -23,6 +23,7 @@ public class KillAllCommand implements CommandExecutor {
     public KillAllCommand(ZomboidEssentials plugin)
     {
         this.plugin = plugin;
+        plugin.getCommand("killall").setExecutor(this);
     }
 
     // ======================================================= \\
