@@ -1,46 +1,29 @@
-name: aZomboid-Essentials
+name: 1Zomboid-Essentials
 version: 1.0
 main: me.zeus.ZomboidEssentials.Core.ZomboidEssentials
 description: Zomboid Essentials
 commands:
-  money:
-    syntax: /money
-    description: Displays money
-    aliases: [bal, balance]
-  teleport:
-    syntax: /teleport <player>
-    description: Teleports you to specified player
-    aliases: [tp, tele, go]
-  tphere:
-    syntax: /tphere <player>
-    description: Teleports specified player to you
-    aliases: [teleporthere, telehere, summon]
-  setmoney:
-    syntax: /setmoney [user] <amount>
-    aliases: [setbalance, setbal]
-    description: Set balance of yourself or another user
-  buy:
-    syntax: /buy <item> <amount>
-    aliases: [purchase, b]
-    description: Purchase an item
-  setspawn:
-    syntax: /setspawn
-    description: Sets the spawn location
-  spawn:
-    syntax: /spawn
-    description: Teleports user to spawn
+  gamemode:
+    description: Switch gamemodes
+    syntax: /gamemode <mode>
   killall:
+    description: Remove all entities in world
     syntax: /killall
-    description: Kills all mobs
-  give:
-    syntax: /give [user] <item> <amount>
-    aliases: [spawnitem, i, gimme]
-    description: Gives specified item
-  time:
-    syntax: /time [night/day]
-    description: Set the time in the world
-    aliases: [settime, timeset]
+  setspawn:
+    description: Set spawn at current lcoation
+    syntax: /setspawn
   setwarp:
+    description: Set warp to current location
     syntax: /setwarp <name>
-    description: Sets a warp where you are standing
-    aliases: [sw, setw]
+  spawn:
+    description: Teleports you to spawn
+    syntax: /spawn
+  teleport:
+    description: Teleports you to specified user
+    syntax: /teleport <user>
+  time:
+    description: Sets time to specified
+    syntax: /time <time-in-ticks>
+  warp:
+    description: Warps you to (or lists) warps
+    syntax: /warp [name]

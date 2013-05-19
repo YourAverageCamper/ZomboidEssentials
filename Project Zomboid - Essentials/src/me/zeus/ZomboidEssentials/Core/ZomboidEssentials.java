@@ -3,26 +3,24 @@ package me.zeus.ZomboidEssentials.Core;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
-import me.zeus.ZomboidEssentials.Commands.BuyCommand;
-import me.zeus.ZomboidEssentials.Commands.GiveCommand;
-import me.zeus.ZomboidEssentials.Commands.KillAllCommand;
-import me.zeus.ZomboidEssentials.Commands.MoneyCommand;
-import me.zeus.ZomboidEssentials.Commands.SetMoneyCommand;
-import me.zeus.ZomboidEssentials.Commands.SetSpawnCommand;
-import me.zeus.ZomboidEssentials.Commands.SetWarpCommand;
-import me.zeus.ZomboidEssentials.Commands.SpawnCommand;
-import me.zeus.ZomboidEssentials.Commands.TeleportCommand;
-import me.zeus.ZomboidEssentials.Commands.TeleportHereCommand;
-import me.zeus.ZomboidEssentials.Commands.TimeCommand;
-import me.zeus.ZomboidEssentials.Handlers.ShopHandler;
-import me.zeus.ZomboidEssentials.Listeners.zInteractEvent;
-import me.zeus.ZomboidEssentials.Listeners.zJoinEvent;
-import me.zeus.ZomboidEssentials.Listeners.zLeaveEvent;
-import me.zeus.ZomboidEssentials.Misc.LocationHolder;
+import me.zeus.ZomboidEssentials.Commands.CMD_Gamemode;
+import me.zeus.ZomboidEssentials.Commands.CMD_KillAll;
+import me.zeus.ZomboidEssentials.Commands.CMD_SetSpawn;
+import me.zeus.ZomboidEssentials.Commands.CMD_SetWarp;
+import me.zeus.ZomboidEssentials.Commands.CMD_Spawn;
+import me.zeus.ZomboidEssentials.Commands.CMD_Teleport;
+import me.zeus.ZomboidEssentials.Commands.CMD_Time;
+import me.zeus.ZomboidEssentials.Commands.CMD_Warp;
+import me.zeus.ZomboidEssentials.Commands.ZCMD;
+import me.zeus.ZomboidEssentials.Misc.Warp;
 
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -31,49 +29,67 @@ public class ZomboidEssentials extends JavaPlugin {
 
     // ======================================================= \\
 
-    private File config;
-    public File warpsFile;
+    private File warpsDir;
+    private File rootDir;
+    private File[] warpsFiles;
 
-    // ======================================================= \\
+    private Map<String, Warp> warps;
 
-    public Economy eco;
-    public ShopHandler shophandler;
-    public LocationHolder locationholder;
+    public Map<String, Warp> getWarps()
+    {
+        return warps;
+    }
 
-    // ======================================================= \\
+    private static ZomboidEssentials plugin;
 
-    private PluginManager pm;
+    public static ZomboidEssentials getInstance()
+    {
+        return plugin;
+    }
 
-    // ======================================================= \\
+    private Location spawn;
 
-    private SpawnCommand spawncommand;
+    public Location getSpawn()
+    {
+        return spawn;
+    }
+
+    public void setSpawn(Location loc)
+    {
+        spawn = loc;
+        getConfig().set("spawn",
+                loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getPitch() + "," + loc.getYaw());
+        saveConfig();
+    }
+
+    private Map<String, ZCMD> commands;
+
+    public Map<String, ZCMD> getCommands()
+    {
+        return commands;
+    }
 
     // ======================================================= \\
 
     @Override
     public void onEnable()
     {
-        // setup stuff via method
+        plugin = this;
+
+        commands = new HashMap<String, ZCMD>();
+        warps = new HashMap<String, Warp>();
+
+        handleDirs();
+        loadCommands();
+        loadWarps();
         handleConfig();
-        handleCommands();
+        loadSpawn();
+    }
 
-        // set up handlers/holders **
-        shophandler = new ShopHandler(this);
-        locationholder = new LocationHolder(this);
-
-        // setup economy **
-        eco = new Economy(this);
-        eco.setupEconomy();
-
-        // register events **
-        pm = getServer().getPluginManager();
-        pm.registerEvents(new zJoinEvent(this), this);
-        pm.registerEvents(new zInteractEvent(this), this);
-        pm.registerEvents(new zLeaveEvent(this), this);
-
-        spawncommand.spawnlocation = locationholder.getSpawn();
-
-        reloadWarps();
+    @Override
+    public void onDisable()
+    {
+        plugin = null;
     }
 
     // ======================================================= \\
@@ -81,46 +97,80 @@ public class ZomboidEssentials extends JavaPlugin {
     // config.yml
     private void handleConfig()
     {
-        config = new File(getDataFolder() + "config.yml");
-        if (!config.exists())
+        File configFile = new File(getDataFolder() + "config.yml");
+        if (!configFile.exists())
         {
-            getConfig().addDefault("Spawn_Location", "World,0,0,0");
+            getConfig().addDefault("spawn", "World,0,0,0,0,0");
             getConfig().options().copyDefaults(true);
+            saveConfig();
         }
-
     }
 
     // commands
-    private void handleCommands()
+    private void loadCommands()
     {
-        getCommand("buy").setExecutor(new BuyCommand(this));
-        getCommand("give").setExecutor(new GiveCommand(this));
-        getCommand("killall").setExecutor(new KillAllCommand(this));
-        getCommand("money").setExecutor(new MoneyCommand(this));
-        getCommand("setmoney").setExecutor(new SetMoneyCommand(this));
-        getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
-        getCommand("setwarp").setExecutor(new SetWarpCommand(this));
-        getCommand("spawn").setExecutor(new SpawnCommand(this));
-        getCommand("teleport").setExecutor(new TeleportCommand(this));
-        getCommand("tphere").setExecutor(new TeleportHereCommand(this));
-        getCommand("time").setExecutor(new TimeCommand(this));
-
-        spawncommand = new SpawnCommand(this);
+        commands.put("gamemode", new CMD_Gamemode());
+        commands.put("killall", new CMD_KillAll());
+        commands.put("setspawn", new CMD_SetSpawn());
+        commands.put("setwarp", new CMD_SetWarp());
+        commands.put("spawn", new CMD_Spawn());
+        commands.put("teleport", new CMD_Teleport());
+        commands.put("time", new CMD_Time());
+        commands.put("warp", new CMD_Warp());
+        commands.put("spawner", new CMD_Spawner());
     }
 
-    public void reloadWarps()
+    // warps
+    private void loadWarps()
     {
-        warpsFile = new File(getDataFolder() + File.separator + "warps.yml");
-        if (!warpsFile.exists())
+        warpsFiles = warpsDir.listFiles();
+        for (int i = 0; i < warpsFiles.length; i++)
         {
+            if (!warpsFiles[i].exists())
+            {
+                return;
+            }
             try
             {
-                warpsFile.createNewFile();
-            } catch (IOException e)
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(warpsFiles[i]));
+                Warp warp = (Warp) ois.readObject();
+                ois.close();
+                warps.put(warp.getName(), warp);
+                System.out.println("Loaded warp " + warp.getName());
+            } catch (IOException | ClassNotFoundException ioe)
             {
-                e.printStackTrace();
+                ioe.printStackTrace();
             }
         }
+    }
+
+    // handle dirs
+    private void handleDirs()
+    {
+        // root dir
+        rootDir = new File(getDataFolder() + "");
+        if (!rootDir.exists())
+        {
+            rootDir.mkdir();
+        }
+
+        // warps dir
+        warpsDir = new File(getDataFolder() + File.separator + "warps");
+        if (!warpsDir.exists())
+        {
+            warpsDir.mkdir();
+        }
+    }
+
+    // spawn location
+    private void loadSpawn()
+    {
+        String[] loc = getConfig().getString("spawn").split(",");
+        Location newLoc = new Location(getServer().getWorld(loc[0]), Double.parseDouble(loc[1]), Double.parseDouble(loc[2]),
+                Double.parseDouble(loc[3]));
+        newLoc.setPitch(Float.parseFloat(loc[4]));
+        newLoc.setYaw(Float.parseFloat(loc[5]));
+        spawn = newLoc;
     }
 
     // ======================================================= \\

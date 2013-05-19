@@ -2,53 +2,67 @@
 package me.zeus.ZomboidEssentials.Misc;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import me.zeus.ZomboidEssentials.Core.ZomboidEssentials;
+import me.zeus.ZomboidEssentials.Util.SerializableLocation;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 
 
-public class Warp {
+public class Warp implements Serializable {
 
     // ======================================================= \\
 
-    private ZomboidEssentials plugin;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5480232812850254505L;
+    private String name;
+    private SerializableLocation location;
 
-    private FileConfiguration warps;
+    // ======================================================= \\
 
-    public Warp(ZomboidEssentials plugin)
+    public Warp(String name, Location loc)
     {
-        this.plugin = plugin;
+        this.name = name;
+        location = new SerializableLocation(loc);
     }
 
-    public Warp(ZomboidEssentials plugin, String name, Location loc)
+    public void save()
     {
-        this.plugin = plugin;
-        warps = YamlConfiguration.loadConfiguration(plugin.warpsFile);
-        warps.set("Warps." + name, loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getPitch() + ","
-                + loc.getYaw());
+        File f = new File(ZomboidEssentials.getInstance().getDataFolder() + File.separator + "warps" + File.separator + name + ".warp");
+        if (f.exists())
+        {
+            return;
+        }
         try
         {
-            warps.save(plugin.warpsFile);
-        } catch (IOException e)
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
+            oos.writeObject(this);
+            oos.close();
+            System.out.println("Saved warp: " + name);  
+        } catch (IOException ioe)
         {
-            e.printStackTrace();
+            ioe.printStackTrace();
         }
     }
 
-    public Location getWarpLocation(String name)
+    // ======================================================= \\
+
+    public String getName()
     {
-        warps = YamlConfiguration.loadConfiguration(plugin.warpsFile);
-        String[] s = warps.get("Warps." + name).toString().split(",");
-        Location loc = new Location(Bukkit.getWorld(s[0]), Double.parseDouble(s[1]), Double.parseDouble(s[2]), Double.parseDouble(s[3]));
-        loc.setPitch(Float.parseFloat(s[4]));
-        loc.setYaw(Float.parseFloat(s[5]));
-        return loc;
+        return name;
+    }
+
+    public Location getLocation()
+    {
+        return location.getLocation();
     }
 
     // ======================================================= \\
